@@ -1,7 +1,8 @@
 library(readxl)
 library(tidyverse)
 library(rvest)
-
+library(formulaic)
+library(rlang)
 #bring in data we got from various sources.
 UN_MigrantStockByOriginAndDestination_2019 <- read_excel("UN_MigrantStockByOriginAndDestination_2019.xlsx", 
                                                          sheet = "Table 1")
@@ -32,7 +33,7 @@ region_countries<-region_table %>% group_by(Country) %>% summarise(n())
 
 #going to attempt to do something else here. Let's use one year of data from the deaths table to start create our region table...
 
-
+region_countries<-read_csv("countries_by_region.csv")
 
 #actually looks like the death table and the births table's regions are going to line up with our other data's regions.
 #with that in mind, just for now filter these guys.
@@ -68,8 +69,35 @@ UN_MigrantStockByOriginAndDestination_2019<- filter(UN_MigrantStockByOriginAndDe
                                                       region == "Oceania" |
                                                       region == "Latin America and the Caribbean" 
                                                     )
+#convert country columns to numeric
+cols <- names(UN_MigrantStockByOriginAndDestination_2019)[7:ncol(UN_MigrantStockByOriginAndDestination_2019)]
+UN_MigrantStockByOriginAndDestination_2019[cols] <- lapply(UN_MigrantStockByOriginAndDestination_2019[cols], as.numeric)
+#create northern america countries...
+northern_america <- filter(region_countries, Region == "Northern America")
+northern_america$Country<-add.backtick(northern_america$Country)
+northern_america<- northern_america$Country
 
-#bam that was a bit easier than expected. What I'm thinking we do next is change the data layout to make things a bit easier to work with.
-#essentially flip the rows and columns of the dataframe here.
+northern_america<-paste(northern_america, collapse = " + ")
+LHS<- "Northern_America"
+#create northern america formula...
+
+UN_MigrantStockByOriginAndDestination_2019<- mutate(UN_MigrantStockByOriginAndDestination_2019,
+                                                    !!LHS := !!parse_expr(northern_america))
+
+UN_MigrantStockByOriginAndDestination_2019<- mutate(UN_MigrantStockByOriginAndDestination_2019,
+                                                    Northern_America2 = Bermuda + Canada +  Greenland +
+                                                    `Saint Pierre and Miquelon` + `United States of America`)
 
 
+#It works...let's do the exact same thing for all other regions...
+Africa<- filter(region_countries, Region == "Africa")
+Africa$Country<- add.backtick(Africa$Country)
+Africa<- Africa$Country
+
+Africa<-paste(Africa, collapse = " + ")
+LHS<- "Africa"
+
+UN_MigrantStockByOriginAndDestination_2019<- mutate(UN_MigrantStockByOriginAndDestination_2019,
+                                                    !!LHS := !!parse_expr(Africa))
+#need to fix the weird characters and make sure the names line up but other than that, should be good to go..
+#just need to do it for the other regions..
