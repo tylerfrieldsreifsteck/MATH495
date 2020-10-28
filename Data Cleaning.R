@@ -11,25 +11,6 @@ annual_number_of_deaths_by_world_region <- read_csv("annual-number-of-deaths-by-
 world_population_by_world_regions <- read_csv("world-population-by-world-regions-post-1820.csv")
 
 
-#Now let's bring in a table of the country and references for data cleaning later.
-#Going to do some webscraping for this.
-
-page<- read_html("https://meta.wikimedia.org/wiki/List_of_countries_by_regional_classification")
-
-tables<- html_table(page, fill = T)
-region_table<-tables[[1]]
-
-#lets see how many regions are in this data.
-region_table %>% group_by(Region) %>% summarize(n())
-#seven regions in this table... 248 countries.
-
-#let's see how many countries are in the birth rate and death rate data..
-deaths_countries<-annual_number_of_deaths_by_world_region %>% group_by(Entity) %>% summarise(n())
-#looks like there are 236 rows unique countries here. Need to see which countries aren't matching up here
-deaths_countries<-annual_number_of_deaths_by_world_region %>% group_by(Entity) %>% summarise(n())
-region_countries<-region_table %>% group_by(Country) %>% summarise(n())
-
-#sadly doesn't look like this table is going to work:(
 
 #going to attempt to do something else here. Let's use one year of data from the deaths table to start create our region table...
 
@@ -87,7 +68,7 @@ UN_MigrantStockByOriginAndDestination_2019<- mutate(UN_MigrantStockByOriginAndDe
 UN_MigrantStockByOriginAndDestination_2019<- mutate(UN_MigrantStockByOriginAndDestination_2019,
                                                     Northern_America2 = Bermuda + Canada +  Greenland +
                                                     `Saint Pierre and Miquelon` + `United States of America`)
-
+write.csv(UN_MigrantStockByOriginAndDestination_2019, "UN_MIGRANT_STOCK.csv")
 
 #It works...let's do the exact same thing for all other regions...
 Africa<- filter(region_countries, Region == "Africa")
