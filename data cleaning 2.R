@@ -51,29 +51,38 @@ oceania <-filter(countries_by_region, Region == "Oceania")
 world_population_by_world_regions <- mutate(world_population_by_world_regions, 
                                             Region = ifelse(world_population_by_world_regions$Entity %in% oceania$Country, 
                                                             "Oceania", Region))
-#checking that all countries are covered 
-countries_with_out_region <- filter(world_population_by_world_regions, 
-                                    Region == "0")
-
-#get rid of region stats 
-world_population_by_world_regions <- filter(world_population_by_world_regions,
-                                            Region != "0")
+#checking that all countries are covered (fixing names)
+#countries_with_out_region <- filter(world_population_by_world_regions, 
+                                    #Region == "0")
 
 #get only years of interest
 annual_number_of_births_by_world_region <- filter(annual_number_of_births_by_world_region, 
                                                   Year >= 1990)
+annual_number_of_births_by_world_region <- filter(annual_number_of_births_by_world_region, 
+                                                  Year != 2020)
 
 annual_number_of_deaths_by_world_region <- filter(annual_number_of_deaths_by_world_region,
                                                   Year >= 1990)
+annual_number_of_deaths_by_world_region <- filter(annual_number_of_deaths_by_world_region,
+                                                  Year != 2020)
 
 world_population_by_world_regions <- filter(world_population_by_world_regions,
                                             Year >= 1990)
 
+#changing Total Population column name 
+colnames(world_population_by_world_regions)[4] <- "Population"
+
 #sum population by region for each year
-#or selecting rows already for Entity 
+world_population_by_world_regions <- world_population_by_world_regions %>% 
+  group_by(Region, Year) %>% 
+  summarise(Population = sum(Population)) %>% 
+  filter(Region != "0")
 
+#joining tables 
+world_population_by_world_regions <- mutate(world_population_by_world_regions, Births = ifelse(Year %in% annual_number_of_births_by_world_region$Year & Region %in% annual_number_of_births_by_world_region$Entity, annual_number_of_births_by_world_region$`Estimates, 1950 - 2020: Annually interpolated demographic indicators - Births (thousands)`, NA))
+world_population_by_world_regions <- mutate(world_population_by_world_regions, Deaths = ifelse(Year %in% annual_number_of_deaths_by_world_region$Year & Region %in% annual_number_of_deaths_by_world_region$Entity, annual_number_of_deaths_by_world_region$`Estimates, 1950 - 2020: Annually interpolated demographic indicators - Deaths (thousands)`, NA))
 
-
-
+regional_stats <- world_population_by_world_regions
+regional_stats <- mutate(regional_stats, Birth_Rate = Births/Population, Death_Rate = Deaths/Population)
 
 
