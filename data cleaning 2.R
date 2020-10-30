@@ -25,6 +25,7 @@ annual_number_of_deaths_by_world_region<- filter(annual_number_of_deaths_by_worl
                                                    Entity == "Latin America and the Caribbean" 
 )
 
+#match up countries to region to get population region 
 world_population_by_world_regions$Region <- as.character(0)
 northern_america <- filter(countries_by_region, Region == "Northern America")
 world_population_by_world_regions <- mutate(world_population_by_world_regions, 
@@ -50,25 +51,19 @@ oceania <-filter(countries_by_region, Region == "Oceania")
 world_population_by_world_regions <- mutate(world_population_by_world_regions, 
                                             Region = ifelse(world_population_by_world_regions$Entity %in% oceania$Country, 
                                                             "Oceania", Region))
-
+#checking that all countries are covered 
 world_pop <- filter(world_population_by_world_regions, 
-                    Region == "0", Year == 2019)
+                    Region == "0")
 
-world_population_by_world_regions <- filter(world_population_by_world_regions, 
-                                            Entity == "Africa" |
-                                            Entity == "Asia" |
-                                            Entity== "Europe" |
-                                            Entity == "Northern America" |
-                                            Entity == "Oceania" |
-                                            Entity == "Latin America and the Caribbean" )
-
+world_population_by_world_regions <- filter(world_population_by_world_regions,
+                                            Region != "0")
+#get only years of interest
 annual_number_of_births_by_world_region <- filter(annual_number_of_births_by_world_region, 
                                                   Year >= 1990)
 
 annual_number_of_deaths_by_world_region <- filter(annual_number_of_deaths_by_world_region,
                                                   Year >= 1990)
 
-#Doesn't have N. America or Latin America 
 world_population_by_world_regions <- filter(world_population_by_world_regions,
                                             Year >= 1990)
 
