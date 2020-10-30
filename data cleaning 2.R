@@ -52,11 +52,13 @@ world_population_by_world_regions <- mutate(world_population_by_world_regions,
                                             Region = ifelse(world_population_by_world_regions$Entity %in% oceania$Country, 
                                                             "Oceania", Region))
 #checking that all countries are covered 
-world_pop <- filter(world_population_by_world_regions, 
-                    Region == "0")
+countries_with_out_region <- filter(world_population_by_world_regions, 
+                                    Region == "0")
 
+#get rid of region stats 
 world_population_by_world_regions <- filter(world_population_by_world_regions,
                                             Region != "0")
+
 #get only years of interest
 annual_number_of_births_by_world_region <- filter(annual_number_of_births_by_world_region, 
                                                   Year >= 1990)
@@ -66,6 +68,12 @@ annual_number_of_deaths_by_world_region <- filter(annual_number_of_deaths_by_wor
 
 world_population_by_world_regions <- filter(world_population_by_world_regions,
                                             Year >= 1990)
+
+#sum population by region for each year
+#or selecting rows already for Entity 
+
+
+
 
 
 
