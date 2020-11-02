@@ -78,11 +78,13 @@ world_population_by_world_regions <- world_population_by_world_regions %>%
   summarise(Population = sum(Population)) %>% 
   filter(Region != "0")
 
-#joining tables 
-world_population_by_world_regions <- mutate(world_population_by_world_regions, Births = ifelse(Year %in% annual_number_of_births_by_world_region$Year & Region %in% annual_number_of_births_by_world_region$Entity, annual_number_of_births_by_world_region$`Estimates, 1950 - 2020: Annually interpolated demographic indicators - Births (thousands)`, NA))
-world_population_by_world_regions <- mutate(world_population_by_world_regions, Deaths = ifelse(Year %in% annual_number_of_deaths_by_world_region$Year & Region %in% annual_number_of_deaths_by_world_region$Entity, annual_number_of_deaths_by_world_region$`Estimates, 1950 - 2020: Annually interpolated demographic indicators - Deaths (thousands)`, NA))
+names(annual_number_of_births_by_world_region)[1] <- "Region"
+names(annual_number_of_deaths_by_world_region)[1] <- "Region"
 
-regional_stats <- world_population_by_world_regions
-regional_stats <- mutate(regional_stats, Birth_Rate = Births/Population, Death_Rate = Deaths/Population)
+#joining tables 
+regional_stats <- left_join(world_population_by_world_regions, annual_number_of_births_by_world_region, by = c("Region", "Year"))
+regional_stats <- left_join(regional_stats, annual_number_of_deaths_by_world_region, by = c("Region", "Year"))
+names(regional_stats)[c(5,7)] <- c("Births", "Deaths")
+regional_stats <- mutate(regional_stats, Birth_Rate = (Births*1000)/Population, Death_Rate = (Deaths*1000)/Population)
 
 
