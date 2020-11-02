@@ -71,7 +71,8 @@ UN_MigrantStockByOriginAndDestination_2019<- mutate(UN_MigrantStockByOriginAndDe
 write.csv(UN_MigrantStockByOriginAndDestination_2019, "UN_MIGRANT_STOCK.csv")
 
 #It works...let's do the exact same thing for all other regions...
-Africa<- filter(region_countries, Region == "Africa")
+Africa<- filter(region_countries, Region == "Africa", Country != "British Indian Ocean Territory",
+                Country != "French Southern Territories")
 Africa$Country<- add.backtick(Africa$Country)
 Africa<- Africa$Country
 
@@ -82,3 +83,53 @@ UN_MigrantStockByOriginAndDestination_2019<- mutate(UN_MigrantStockByOriginAndDe
                                                     !!LHS := !!parse_expr(Africa))
 #need to fix the weird characters and make sure the names line up but other than that, should be good to go..
 #just need to do it for the other regions..
+
+#Asia
+Asia<- filter(region_countries, Region == "Asia", Country != "China, Hong Kong Special Administrative Region",
+              Country != "China, Macao Special Administrative Region", Country != "Democratic People's Republic of Korea",
+              Country != "Timor-Leste")
+
+Asia$Country<- add.backtick(Asia$Country)
+Asia<- Asia$Country
+
+Asia<-paste(Asia, collapse = " + ")
+LHS<- "Asia"
+
+UN_MigrantStockByOriginAndDestination_2019<- mutate(UN_MigrantStockByOriginAndDestination_2019,
+                                                    !!LHS := !!parse_expr(Asia))
+
+#Europe
+Europe<- filter(region_countries, Region == "Europe")
+
+Europe$Country<- add.backtick(Europe$Country)
+Europe<- Europe$Country
+
+Europe<-paste(Europe, collapse = " + ")
+LHS<- "Europe"
+
+UN_MigrantStockByOriginAndDestination_2019<- mutate(UN_MigrantStockByOriginAndDestination_2019,
+                                                    !!LHS := !!parse_expr(Europe))
+#Latin America
+Latin_America<- filter(region_countries, Region == "Latin America and the Caribbean")
+
+Latin_America$Country<- add.backtick(Latin_America$Country)
+Latin_America<- Latin_America$Country
+
+Latin_America<-paste(Latin_America, collapse = " + ")
+LHS<- "Latin_America"
+
+UN_MigrantStockByOriginAndDestination_2019<- mutate(UN_MigrantStockByOriginAndDestination_2019,
+                                                    !!LHS := !!parse_expr(Latin_America))
+
+#Oceana
+
+Oceania<- filter(region_countries, Region == "Oceania")
+
+Oceania$Country<- add.backtick(Oceania$Country)
+Oceania<- Oceania$Country
+
+Oceania-paste(Oceania, collapse = " + ")
+LHS<- "Oceania"
+
+UN_MigrantStockByOriginAndDestination_2019<- mutate(UN_MigrantStockByOriginAndDestination_2019,
+                                                    !!LHS := !!parse_expr(Oceania))
