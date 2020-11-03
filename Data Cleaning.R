@@ -27,6 +27,7 @@ UN_MigrantStockByOriginAndDestination_2019<- filter(UN_MigrantStockByOriginAndDe
 #convert country columns to numeric
 cols <- names(UN_MigrantStockByOriginAndDestination_2019)[7:ncol(UN_MigrantStockByOriginAndDestination_2019)]
 UN_MigrantStockByOriginAndDestination_2019[cols] <- lapply(UN_MigrantStockByOriginAndDestination_2019[cols], as.numeric)
+
 #create northern america countries...
 northern_america <- filter(region_countries, Region == "Northern America")
 northern_america$Country<-add.backtick(northern_america$Country)
@@ -59,9 +60,7 @@ UN_MigrantStockByOriginAndDestination_2019<- mutate(UN_MigrantStockByOriginAndDe
 #just need to do it for the other regions..
 
 #Asia
-Asia<- filter(region_countries, Region == "Asia", Country != "China, Hong Kong Special Administrative Region",
-              Country != "China, Macao Special Administrative Region", Country != "Democratic People's Republic of Korea",
-              Country != "Timor-Leste")
+Asia<- filter(region_countries, Region == "Asia")
 
 Asia$Country<- add.backtick(Asia$Country)
 Asia<- Asia$Country
@@ -107,3 +106,4 @@ LHS<- "Oceania"
 
 UN_MigrantStockByOriginAndDestination_2019<- mutate(UN_MigrantStockByOriginAndDestination_2019,
                                                     !!LHS := !!parse_expr(Oceania))
+
