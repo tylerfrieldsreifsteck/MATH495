@@ -47,7 +47,7 @@ UN_MigrantStockByOriginAndDestination_2019<- mutate(UN_MigrantStockByOriginAndDe
 
 #It works...let's do the exact same thing for all other regions...
 Africa<- filter(region_countries, Region == "Africa", Country != "British Indian Ocean Territory",
-                Country != "French Southern Territories")
+                Country != "French Southern Territories", Country != "Bissau")
 Africa$Country<- add.backtick(Africa$Country)
 Africa<- Africa$Country
 
@@ -60,7 +60,7 @@ UN_MigrantStockByOriginAndDestination_2019<- mutate(UN_MigrantStockByOriginAndDe
 #just need to do it for the other regions..
 
 #Asia
-Asia<- filter(region_countries, Region == "Asia")
+Asia<- filter(region_countries, Region == "Asia", Country != "Taiwan")
 
 Asia$Country<- add.backtick(Asia$Country)
 Asia<- Asia$Country
@@ -72,7 +72,8 @@ UN_MigrantStockByOriginAndDestination_2019<- mutate(UN_MigrantStockByOriginAndDe
                                                     !!LHS := !!parse_expr(Asia))
 
 #Europe
-Europe<- filter(region_countries, Region == "Europe")
+Europe<- filter(region_countries, Region == "Europe", Country != "Aland Islands", Country != "Guernsey", Country != "Jersey", 
+                                                      Country != "Sark", Country != "Svalbard and Jan Mayen Islands")
 
 Europe$Country<- add.backtick(Europe$Country)
 Europe<- Europe$Country
@@ -83,7 +84,10 @@ LHS<- "Europe"
 UN_MigrantStockByOriginAndDestination_2019<- mutate(UN_MigrantStockByOriginAndDestination_2019,
                                                     !!LHS := !!parse_expr(Europe))
 #Latin America
-Latin_America<- filter(region_countries, Region == "Latin America and the Caribbean")
+Latin_America<- filter(region_countries, Region == "Latin America and the Caribbean", Country != "Saint Barthelemy",
+                                                                                      Country != "Saint Martin (French Part)",
+                                                                                      Country != "Bouvet Island",
+                                                                                      Country != "South Georgia and the South Sandwich Islands")
 
 Latin_America$Country<- add.backtick(Latin_America$Country)
 Latin_America<- Latin_America$Country
@@ -96,14 +100,21 @@ UN_MigrantStockByOriginAndDestination_2019<- mutate(UN_MigrantStockByOriginAndDe
 
 #Oceana
 
-Oceania<- filter(region_countries, Region == "Oceania")
+Oceania<- filter(region_countries, Region == "Oceania", Country != "Christmas Island",
+                                                        Country != "Cocos (Keeling) Islands",
+                                                        Country != "Heard Island and McDonald Islands",
+                                                        Country != "Norfolk Island",
+                                                        Country != "United States Minor Outlying Islands",
+                                                        Country != "Pitcairn")
 
 Oceania$Country<- add.backtick(Oceania$Country)
 Oceania<- Oceania$Country
 
-Oceania-paste(Oceania, collapse = " + ")
+Oceania<-paste(Oceania, collapse = " + ")
 LHS<- "Oceania"
 
 UN_MigrantStockByOriginAndDestination_2019<- mutate(UN_MigrantStockByOriginAndDestination_2019,
                                                     !!LHS := !!parse_expr(Oceania))
 
+UN_Migrant_Data <- select(UN_MigrantStockByOriginAndDestination_2019, Year, region, Northern_America, Asia, Africa, Europe, Latin_America, Oceania)
+names(UN_Migrant_Data)[2] <- "Region"
