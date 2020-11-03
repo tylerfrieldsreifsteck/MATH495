@@ -3,40 +3,14 @@ library(tidyverse)
 library(rvest)
 library(formulaic)
 library(rlang)
+
+#cleaning the UN Migrant Stock Data 
+
+
 #bring in data we got from various sources.
-UN_MigrantStockByOriginAndDestination_2019 <- read_excel("UN_MigrantStockByOriginAndDestination_2019.xlsx", 
+UN_MigrantStockByOriginAndDestination_2019 <- read_excel("Matches_Ethan_UN_MigrantStockByOriginAndDestination_2019.xlsx", 
                                                          sheet = "Table 1")
-annual_number_of_births_by_world_region <- read_csv("annual-number-of-births-by-world-region.csv")
-annual_number_of_deaths_by_world_region <- read_csv("annual-number-of-deaths-by-world-region.csv")
-world_population_by_world_regions <- read_csv("world-population-by-world-regions-post-1820.csv")
-
-
-
-#going to attempt to do something else here. Let's use one year of data from the deaths table to start create our region table...
-
 region_countries<-read_csv("countries_by_region.csv")
-
-#actually looks like the death table and the births table's regions are going to line up with our other data's regions.
-#with that in mind, just for now filter these guys.
-annual_number_of_births_by_world_region<- filter(annual_number_of_births_by_world_region, 
-                                                    Entity == "Africa" |
-                                                      Entity == "Asia" |
-                                                      Entity== "Europe" |
-                                                      Entity == "Northern America" |
-                                                      Entity == "Oceania" |
-                                                      Entity == "Latin America and the Caribbean" 
-)
-
-annual_number_of_deaths_by_world_region<- filter(annual_number_of_deaths_by_world_region, 
-                                                 Entity == "Africa" |
-                                                   Entity == "Asia" |
-                                                   Entity== "Europe" |
-                                                   Entity == "Northern America" |
-                                                   Entity == "Oceania" |
-                                                   Entity == "Latin America and the Caribbean" 
-)
-
-
 
 #going to change the name of a column in the migration data to make it easier
 colnames(UN_MigrantStockByOriginAndDestination_2019)[3]<- "region"
@@ -65,10 +39,10 @@ LHS<- "Northern_America"
 UN_MigrantStockByOriginAndDestination_2019<- mutate(UN_MigrantStockByOriginAndDestination_2019,
                                                     !!LHS := !!parse_expr(northern_america))
 
+#can delete ? (this was a check)
 UN_MigrantStockByOriginAndDestination_2019<- mutate(UN_MigrantStockByOriginAndDestination_2019,
                                                     Northern_America2 = Bermuda + Canada +  Greenland +
                                                     `Saint Pierre and Miquelon` + `United States of America`)
-write.csv(UN_MigrantStockByOriginAndDestination_2019, "UN_MIGRANT_STOCK.csv")
 
 #It works...let's do the exact same thing for all other regions...
 Africa<- filter(region_countries, Region == "Africa", Country != "British Indian Ocean Territory",
