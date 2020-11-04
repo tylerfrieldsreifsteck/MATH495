@@ -4,6 +4,15 @@ library(rvest)
 library(formulaic)
 library(rlang)
 
+#bring in data we got from various sources.
+UN_MigrantStockByOriginAndDestination_2019 <- read_excel("Matches_Ethan_UN_MigrantStockByOriginAndDestination_2019.xlsx", 
+                                                         sheet = "Table 1")
+annual_number_of_births_by_world_region <- read_csv("annual-number-of-births-by-world-region.csv")
+annual_number_of_deaths_by_world_region <- read_csv("annual-number-of-deaths-by-world-region.csv")
+world_population_by_world_regions <- read_csv("world-population-by-world-regions-post-1820.csv")
+
+
+
 #cleaning the UN Migrant Stock Data 
 
 
@@ -60,6 +69,10 @@ UN_MigrantStockByOriginAndDestination_2019<- mutate(UN_MigrantStockByOriginAndDe
 #just need to do it for the other regions..
 
 #Asia
+
+Asia<- filter(region_countries, Region == "Asia", Country != "Taiwan", Country !='China, Hong Kong Special Administrative Region',
+              Country !='China, Macao Special Administrative Region', Country!= 'Timor')
+
 Asia<- filter(region_countries, Region == "Asia", Country != "Taiwan")
 
 Asia$Country<- add.backtick(Asia$Country)
