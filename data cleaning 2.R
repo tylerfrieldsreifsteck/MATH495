@@ -1,6 +1,7 @@
-library(readxl)
 library(tidyverse)
 library(rvest)
+
+#Cleaning the Births/Deaths/Population Data
 
 annual_number_of_births_by_world_region <- read_csv("annual-number-of-births-by-world-region.csv")
 annual_number_of_deaths_by_world_region <- read_csv("annual-number-of-deaths-by-world-region.csv")
@@ -55,6 +56,7 @@ world_population_by_world_regions <- mutate(world_population_by_world_regions,
 #countries_with_out_region <- filter(world_population_by_world_regions, 
                                     #Region == "0")
 
+<<<<<<< HEAD
 #get only years of interest
 annual_number_of_births_by_world_region <- filter(annual_number_of_births_by_world_region, 
                                                   Year >= 1950)
@@ -63,6 +65,16 @@ annual_number_of_births_by_world_region <- filter(annual_number_of_births_by_wor
 
 annual_number_of_deaths_by_world_region <- filter(annual_number_of_deaths_by_world_region,
                                                   Year >= 1950)
+=======
+#get only years of interest (1950-2019) -- UN data only has (1990-2019)
+#annual_number_of_births_by_world_region <- filter(annual_number_of_births_by_world_region, 
+#Year >= 1990)
+annual_number_of_births_by_world_region <- filter(annual_number_of_births_by_world_region, 
+                                                  Year != 2020)
+
+#annual_number_of_deaths_by_world_region <- filter(annual_number_of_deaths_by_world_region,
+#Year >= 1990)
+>>>>>>> 1ede69d5c82387f2ce9125bfcf55d393e680c74e
 annual_number_of_deaths_by_world_region <- filter(annual_number_of_deaths_by_world_region,
                                                   Year != 2020)
 
@@ -86,5 +98,5 @@ regional_stats <- left_join(world_population_by_world_regions, annual_number_of_
 regional_stats <- left_join(regional_stats, annual_number_of_deaths_by_world_region, by = c("Region", "Year"))
 names(regional_stats)[c(5,7)] <- c("Births", "Deaths")
 regional_stats <- mutate(regional_stats, Birth_Rate = (Births*1000)/Population, Death_Rate = (Deaths*1000)/Population)
-
+regional_stats <- select(regional_stats, Region, Year, Population, Births, Deaths, Birth_Rate, Death_Rate)
 
