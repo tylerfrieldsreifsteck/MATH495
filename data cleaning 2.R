@@ -57,17 +57,17 @@ world_population_by_world_regions <- mutate(world_population_by_world_regions,
 
 #get only years of interest
 annual_number_of_births_by_world_region <- filter(annual_number_of_births_by_world_region, 
-                                                  Year >= 1990)
+                                                  Year >= 1950)
 annual_number_of_births_by_world_region <- filter(annual_number_of_births_by_world_region, 
                                                   Year != 2020)
 
 annual_number_of_deaths_by_world_region <- filter(annual_number_of_deaths_by_world_region,
-                                                  Year >= 1990)
+                                                  Year >= 1950)
 annual_number_of_deaths_by_world_region <- filter(annual_number_of_deaths_by_world_region,
                                                   Year != 2020)
 
 world_population_by_world_regions <- filter(world_population_by_world_regions,
-                                            Year >= 1990)
+                                            Year >= 1950)
 
 #changing Total Population column name 
 colnames(world_population_by_world_regions)[4] <- "Population"
