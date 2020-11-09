@@ -120,8 +120,17 @@ UN_Migrant_Data<- mutate(UN_Migrant_Data, Region = ifelse(Region == "Northern Am
 #if the region = name of the row,
 for(i in 3:ncol(UN_Migrant_Data)){
   for(j in 1:nrow(UN_Migrant_Data)){
-    UN_Migrant_Data[j, i] = ifelse(UN_Migrant_Data[j , 2] == names(UN_Migrant_Data[, i]), 0,
+    UN_Migrant_Data[j, i] = ifelse(UN_Migrant_Data[j , 2] == names(UN_Migrant_Data[, i]), as.numeric(0),
                                                                   UN_Migrant_Data[j,i])
   }
 }
+
+#make some rates:
+UN_Migrant_Data<- mutate(UN_Migrant_Data, northern_america_rate = Northern_America/Population,
+                                          asia_rate = Asia/Population,
+                                          africa_rate = Africa/Population,
+                                          europe_rate = Europe/Population,
+                                          latin_america_rate = Latin_America/Population,
+                                          oceania_rate = Oceania/Population)
+
 
