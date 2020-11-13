@@ -105,32 +105,6 @@ regional_stats <- mutate(regional_stats, Birth_Rate = (Births*1000)/Population, 
 regional_stats <- select(regional_stats, Region, Year, Population, Births, Deaths, Birth_Rate, Death_Rate)
 
 
-##Connect UN Migrant data to the world_pop_5_year data....
 
-UN_Migrant_Data<- left_join(UN_Migrant_Data, world_pop_5_year, by = c("Region", "Year"))
-
-#one last thing we need to do here.
-UN_Migrant_Data<- mutate(UN_Migrant_Data, Region = ifelse(Region == "Northern America", 
-                                                          "Northern_America", ifelse(
-                                                          Region == "Latin America and the Caribbean",
-                                                          "Latin_America", Region
-                                                          )))
-
-
-#if the region = name of the row,
-for(i in 3:ncol(UN_Migrant_Data)){
-  for(j in 1:nrow(UN_Migrant_Data)){
-    UN_Migrant_Data[j, i] = ifelse(UN_Migrant_Data[j , 2] == names(UN_Migrant_Data[, i]), as.numeric(0),
-                                                                  UN_Migrant_Data[j,i])
-  }
-}
-
-#make some rates:
-UN_Migrant_Data<- mutate(UN_Migrant_Data, northern_america_rate = Northern_America/Population,
-                                          asia_rate = Asia/Population,
-                                          africa_rate = Africa/Population,
-                                          europe_rate = Europe/Population,
-                                          latin_america_rate = Latin_America/Population,
-                                          oceania_rate = Oceania/Population)
 
 

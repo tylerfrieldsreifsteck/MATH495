@@ -131,3 +131,31 @@ UN_MigrantStockByOriginAndDestination_2019<- mutate(UN_MigrantStockByOriginAndDe
 
 UN_Migrant_Data <- select(UN_MigrantStockByOriginAndDestination_2019, Year, region, Northern_America, Asia, Africa, Europe, Latin_America, Oceania)
 names(UN_Migrant_Data)[2] <- "Region"
+
+##Connect UN Migrant data to the world_pop_5_year data....
+
+UN_Migrant_Data<- left_join(UN_Migrant_Data, world_pop_5_year, by = c("Region", "Year"))
+
+#one last thing we need to do here.
+UN_Migrant_Data<- mutate(UN_Migrant_Data, Region = ifelse(Region == "Northern America", 
+                                                          "Northern_America", ifelse(
+                                                            Region == "Latin America and the Caribbean",
+                                                            "Latin_America", Region
+                                                          )))
+
+
+#if the region = name of the row,
+for(i in 3:ncol(UN_Migrant_Data)){
+  for(j in 1:nrow(UN_Migrant_Data)){
+    UN_Migrant_Data[j, i] = ifelse(UN_Migrant_Data[j , 2] == names(UN_Migrant_Data[, i]), as.numeric(0),
+                                   UN_Migrant_Data[j,i])
+  }
+}
+
+#make some rates:
+UN_Migrant_Data<- mutate(UN_Migrant_Data, northern_america_rate = Northern_America/Population,
+                         asia_rate = Asia/Population,
+                         africa_rate = Africa/Population,
+                         europe_rate = Europe/Population,
+                         latin_america_rate = Latin_America/Population,
+                         oceania_rate = Oceania/Population)
