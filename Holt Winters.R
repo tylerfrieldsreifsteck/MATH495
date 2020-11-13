@@ -22,7 +22,7 @@ five_to_ones<-function(rate1, rate2, start_1, start_2){
   
 }
 
-five_to_ones(.78, .79, 1990, 1995)
+five_to_ones(.78, .79, 2015, 2019)
 
 #create vector of years from 1990 to 2019
 
@@ -37,31 +37,36 @@ years<- 1990:2019
 #first group split the migrant list stuff again
 UN_Migrant_Data<- group_split(UN_Migrant_Data, Region)
 
-for(l in 1: length(UN_Migrant_Data)){
-  UN_Migrant_Data[[l]][,10:15]<- as.numeric(UN_Migrant_Data[[l]][,10:15])
-}
+
 
 new_data<- vector(mode = "list", length = length(UN_Migrant_Data))
 
+v<- c(rep(0, times = 40))
+#create an empty dataframe with 6 columns
+df<-data.frame(col1 = v,
+               col2 = v,
+               col3 = v,
+               col4 = v,
+               col5 = v,
+               col6 = v)
 for(m in 1: length(UN_Migrant_Data)){
-  new_data[[m]]<- as.data.frame(new_data[[m]])
+  new_data[[m]]<- df
 }
 
-
+#want to make a
 
 five_year<- vector(mode = "list", length = 6)
-for(i in 1:length(UN_Migrant_Data)){
+for(i in 1: length(UN_Migrant_Data)){
   for(j in 10:ncol(UN_Migrant_Data[[i]])){
-    for(k in 1:nrow(UN_Migrant_Data[[i]]-1)){
-     vect<-five_to_ones(as.numeric(UN_Migrant_Data[[i]][k, j]), as.numeric(UN_Migrant_Data[[i]][k+1,j]),
-                     as.numeric(UN_Migrant_Data[[i]][k, 1]), as.numeric(UN_Migrant_Data[[i]][k+1, 1]))
-     five_year[[k]]<- vect
+    for(k in 2:nrow(UN_Migrant_Data[[i]])){
+     vect<-five_to_ones(as.numeric(UN_Migrant_Data[[i]][k-1, j]), as.numeric(UN_Migrant_Data[[i]][k,j]),
+                     as.numeric(UN_Migrant_Data[[i]][k-1, 1]), as.numeric(UN_Migrant_Data[[i]][k, 1]))
+     five_year[[k-1]]<- vect 
     }
-    five_year<- rbindlist(five_year)
-    five_year<- distinct(five_year)
-    new_data[[i]][,j]<- five_year
+    five_year<- rbind_list(five_year)
+    
+    new_data[[i]]$coli<-five_year
   }
-  
 }
 
 
